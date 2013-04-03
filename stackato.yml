@@ -1,0 +1,18 @@
+name: slartibartfast
+framework:
+  type: python
+  runtime: python27
+ignores: ["gaia.tar.gz", "gaia-raw", "outputs", "external-apps"]
+requirements:
+  pip:
+    - Flask
+hooks:
+  post-staging:
+    - curl -L https://github.com/mozilla-b2g/gaia/archive/B2G_1_0_1_20130217163900.tar.gz -o gaia.tar.gz
+    - tar xzf gaia.tar.gz --exclude "*.ogv" --exclude "*.ogg" --exclude "*.webm"
+    - mv gaia-B2G* gaia-raw
+    - rm gaia.tar.gz
+    - mkdir outputs
+    - mkdir external-apps
+processes:
+  web: python web.py
