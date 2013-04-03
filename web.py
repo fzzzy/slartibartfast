@@ -1,11 +1,12 @@
 
 
 import commands
-import flask
 import glob
 import os
 import json
 import uuid
+
+import flask
 
 import preload
 
@@ -44,7 +45,6 @@ def customize():
     for homescreen in parsed["homescreens"]:
         for appname in homescreen:
             if appname and appname[0] == "external-apps":
-                ## TODO symlink the external apps
                 result = commands.getoutput(
                     "cd %(fullpath)s%(sep)sexternal-apps && ln -s ..%(sep)s..%(sep)s..%(sep)sexternal-apps%(sep)s%(app-name)s" % {
                         "fullpath": fullpath,
