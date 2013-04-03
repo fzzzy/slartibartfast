@@ -5,6 +5,7 @@ import flask
 import glob
 import os
 import json
+import uuid
 
 import preload
 
@@ -28,8 +29,9 @@ def apps_available():
     return flask.jsonify({"apps-available": available})
 
 
-@app.route('/customize/<name>', methods=['PUT'])
-def customize(name):
+@app.route('/customize/', methods=['POST'])
+def customize():
+    name = str(uuid.uuid4())
     fullpath = os.path.join("outputs", name)
     os.mkdir(fullpath)
     os.mkdir(os.path.join(fullpath, "distribution"))
@@ -70,7 +72,7 @@ def profiles(name):
         return "Not Found", 404
 
 
-@app.route('/apps/', methods=['PUT'])
+@app.route('/apps/', methods=['POST'])
 def apps():
     url = flask.request.data
     manifest = preload.fetch_application(url, "external-apps")

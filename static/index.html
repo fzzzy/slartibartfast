@@ -61,27 +61,6 @@ p {
     </div>
     <script>
 
-/*
-From:
-  http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
-If you know of a better js uuid generator, let me know
-*/
-
-function createUUID() {
-    // http://www.ietf.org/rfc/rfc4122.txt
-    var s = [];
-    var hexDigits = "0123456789abcdef";
-    for (var i = 0; i < 36; i++) {
-        s[i] = hexDigits[Math.floor(Math.random() * 0x10)];
-    }
-    s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
-    s[19] = hexDigits[(s[19] & 0x3) | 0x8];  // bits 6-7 of the clock_seq_hi_and_reserved to 01
-    s[8] = s[13] = s[18] = s[23] = "-";
-
-    var uuid = s.join("");
-    return uuid;
-}
-
 var core = [
   [
     "apps/dialer",
@@ -135,7 +114,7 @@ function startup() {
 
     console.log(this.url.value);
     var x = new XMLHttpRequest();
-    x.open("PUT", "/apps/");
+    x.open("POST", "/apps/");
     x.send(this.url.value);
     x.onreadystatechange = function() {
       if (this.readyState === 4) {
@@ -248,13 +227,13 @@ var build = getEl("build");
 
 build.onclick = function(e) {
   var txt = JSON.stringify({"homescreens": apps_chosen}),
-      url = "/customize/" + createUUID(),
+      url = "/customize/",
       x = new XMLHttpRequest();
 
   build.disabled = true;
   build.textContent = "Building..."
 
-  x.open("PUT", url);
+  x.open("POST", url);
   x.setRequestHeader("Content-Type", "application/json")
   x.send(txt);
   x.onreadystatechange = function() {
