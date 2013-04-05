@@ -21,23 +21,23 @@
   position: absolute;
   left: 32px;
   top: 96px;
-  width: 352px;
-  height: 64px;
+  width: 576px;
+  height: 96px;
   border: 1px solid black;
 }
 
 .app {
     position: absolute;
-    fontSize: xx-small;
-    width: 32px;
-    height: 32px;
+    font-size: x-small;
+    width: 64px;
+    height: 64px;
     border: 1px solid black;
 }
 
 .homescreen {
   position: absolute;
-  width: 212px;
-  height: 260px;
+  width: 338px;
+  height: 417px;
   border: 1px solid black;
 }
 
@@ -47,7 +47,7 @@ p {
     </style>
   </head>
   <body>
-    <h1>Configure Gaia <button id="build">Build profile</button></h1>
+    <h1>Configure Gaia <button id="build">Build distribution</button></h1>
     <p>Click on an icon space to choose the app for that space.</p>
     <div id="available">
       Choose the app for this space:
@@ -63,14 +63,23 @@ p {
 
 var core = [
   [
-    "apps/dialer",
-    "apps/sms",
-    "apps/browser",
-    "apps/camera",
-    "apps/fm"
-  ],
-  [
-    "external-apps/marketplace"
+    ["apps", "communications", "dialer"],
+    ["apps", "sms"],
+    ["apps", "communications", "contacts"],
+    ["apps", "browser"]
+  ], [
+    ["apps", "camera"],
+    ["apps", "gallery"],
+    ["apps", "fm"],
+    ["apps", "settings"],
+    ["external-apps", "marketplace"]
+  ], [
+    ["apps", "calendar"],
+    ["apps", "clock"],
+    ["apps", "costcontrol"],
+    ["apps", "email"],
+    ["apps", "music"],
+    ["apps", "video"]
   ]
 ];
 
@@ -80,7 +89,7 @@ var getEl = document.getElementById.bind(document),
 
 var apps = [];
 
-var positions = [[], ["16px", "196px"], ["256px", "196px"]];
+var positions = [[], ["16px", "212px"], ["384px", "212px"]];
 
 var apps_chosen = [
   new Array(20),
@@ -163,8 +172,14 @@ function startup() {
   for (var x = 0; x < 7; x++) {
     var app = create("div");
     app.setAttribute("class", "app");
-    app.style.left = 32 * x + 16 * (x + 1) + "px";
+    app.style.left = 64 * x + 16 * (x + 1) + "px";
     app.style.top = "16px";
+    console.log(core[0][x]);
+    if (core[0][x] !== undefined) {
+      console.log(core[0][x][core[0][x].length - 1]);
+      apps_chosen[0][x] = core[0][x];
+      app.textContent = core[0][x][core[0][x].length - 1];
+    }
 
     app.onclick = (function(me, myx) {
       return function(e) {
@@ -199,8 +214,13 @@ function startup() {
           y = Math.floor(j / 4);
 
       app.setAttribute("class", "app");
-      app.style.left = x * 32 + (16 * (x + 1)) + "px";
-      app.style.top = y * 32 + (16 * (y + 1)) + "px";
+      app.style.left = x * 64 + (16 * (x + 1)) + "px";
+      app.style.top = y * 64 + (16 * (y + 1)) + "px";
+      if (core[i][j] !== undefined) {
+        console.log(core[i][j][core[i][j].length - 1]);
+        apps_chosen[i][j] = core[i][j];
+        app.textContent = core[i][j][core[i][j].length - 1];
+      }
 
       app.onclick = (function(me, myh, myx, myy) {
         return function(e) {
@@ -240,7 +260,7 @@ build.onclick = function(e) {
     if (this.readyState === 4) {
       if (this.status === 200) {
         build.disabled = false;
-        build.textContent = "Build profile";
+        build.textContent = "Build distribution";
         console.log(this.responseText);
         window.location = JSON.parse(this.responseText)['profile-url'];
       }
